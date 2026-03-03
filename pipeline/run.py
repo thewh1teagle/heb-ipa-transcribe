@@ -25,7 +25,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="output.tsv")
     parser.add_argument("--max", type=int, default=None, dest="max_items")
-    parser.add_argument("--queue-size", type=int, default=3)
+    parser.add_argument("--queue-size", type=int, default=6)
     args = parser.parse_args()
 
     skip_ids = load_skip_ids(args.output)
