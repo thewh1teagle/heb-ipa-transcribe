@@ -1,5 +1,5 @@
 """
-uv run pipeline/run.py [--output output.tsv] [--max N] [--queue-size N]
+uv run python -m pipeline.run [--output output.tsv] [--max N] [--queue-size N]
 """
 import argparse
 import os
