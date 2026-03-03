@@ -49,7 +49,7 @@ def main():
     transcriber = Transcriber(q, output_path=args.output)
 
     downloader.start()
-    transcriber.run(progress=tqdm(total=progress_total, initial=0, unit="file"))
+    transcriber.run(progress=tqdm(total=total, initial=len(skip_ids), unit="file"))
     downloader.join()
 
 
