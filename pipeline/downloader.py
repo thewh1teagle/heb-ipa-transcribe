@@ -4,11 +4,9 @@ import queue
 import threading
 
 import numpy as np
-import pandas as pd
 import soundfile as sf
 from datasets import Audio, load_dataset
 
-TRANSCRIPTS_PATH = "hf://datasets/yanirmr/voxknesset/transcripts.parquet"
 DATASET_NAME = "yanirmr/VoxKnesset"
 TARGET_SR = 16000
 
@@ -22,9 +20,6 @@ class Downloader(threading.Thread):
 
     def run(self):
         try:
-            transcripts = pd.read_parquet(TRANSCRIPTS_PATH)
-            text_lookup = dict(zip(transcripts["filename"], transcripts["text"]))
-
             ds = load_dataset(DATASET_NAME, split="train", streaming=True)
             ds = ds.cast_column("audio", Audio(decode=False))
 
@@ -45,8 +40,7 @@ class Downloader(threading.Thread):
                     import librosa
                     array = librosa.resample(array, orig_sr=sampling_rate, target_sr=TARGET_SR)
 
-                text = text_lookup.get(filename, "")
-                self.q.put((filename, array, text))
+                self.q.put((filename, array))
                 delivered += 1
         finally:
             self.q.put(None)
