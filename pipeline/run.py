@@ -9,6 +9,7 @@ from datasets import load_dataset_builder
 from tqdm import tqdm
 
 from pipeline.downloader import Downloader, DATASET_NAME
+from pipeline.preprocessor import Preprocessor
 from pipeline.transcriber import Transcriber
 
 
@@ -35,22 +36,23 @@ def main():
     if skip_ids:
         print(f"Resuming: skipping {len(skip_ids)} already-done files")
 
-    builder = load_dataset_builder(DATASET_NAME)
-    total = builder.info.splits["train"].num_examples
-
     max_new = None
     if args.max_items is not None:
         max_new = max(0, args.max_items - len(skip_ids))
 
-    progress_total = max_new if max_new is not None else total - len(skip_ids)
+    download_q = queue.Queue(maxsize=args.queue_size)
+    preprocess_q = queue.Queue(maxsize=args.queue_size)
 
-    q = queue.Queue(maxsize=args.queue_size)
-    downloader = Downloader(q, skip_ids=skip_ids, max_items=max_new)
-    transcriber = Transcriber(q, output_path=args.output)
+    downloader = Downloader(download_q, skip_ids=skip_ids, max_items=max_new)
+    preprocessor = Preprocessor(download_q, preprocess_q)
+    transcriber = Transcriber(preprocess_q, output_path=args.output)
 
     downloader.start()
+    preprocessor.start()
+    total = load_dataset_builder(DATASET_NAME).info.splits["train"].num_examples
     transcriber.run(progress=tqdm(total=total, initial=len(skip_ids), unit="file"))
     downloader.join()
+    preprocessor.join()
 
 
 if __name__ == "__main__":

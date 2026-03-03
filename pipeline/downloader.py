@@ -10,7 +10,6 @@ from datasets import Audio, load_dataset
 DATASET_NAME = "yanirmr/VoxKnesset"
 TARGET_SR = 16000
 
-
 class Downloader(threading.Thread):
     def __init__(self, q: queue.Queue, skip_ids: set, max_items: int | None = None):
         super().__init__(daemon=True)
