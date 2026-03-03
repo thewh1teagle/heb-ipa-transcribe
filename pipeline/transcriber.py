@@ -25,14 +25,19 @@ class Transcriber:
         self.vad_model = load_silero_vad()
 
     def run(self, progress: tqdm):
-        with open(self.output_path, "a", encoding="utf-8") as f:
+        with open(self.output_path, "a", encoding="utf-8") as f, progress:
             while True:
                 item = self.q.get()
                 if item is None:
                     break
 
                 filename, audio = item
-                chunks = self._transcribe(audio)
+                try:
+                    chunks = self._transcribe(audio)
+                except Exception as e:
+                    print(f"[transcriber] skipping {filename}: {e}")
+                    progress.update(1)
+                    continue
 
                 for text, ipa in chunks:
                     f.write(f"{filename}\t{text}\t{ipa}\n")

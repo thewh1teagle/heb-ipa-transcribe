@@ -32,13 +32,17 @@ class Downloader(threading.Thread):
                 if filename in self.skip_ids:
                     continue
 
-                audio_bytes = sample["audio"]["bytes"]
-                array, sampling_rate = sf.read(io.BytesIO(audio_bytes))
-                array = array.astype(np.float32)
+                try:
+                    audio_bytes = sample["audio"]["bytes"]
+                    array, sampling_rate = sf.read(io.BytesIO(audio_bytes))
+                    array = array.astype(np.float32)
 
-                if sampling_rate != TARGET_SR:
-                    import librosa
-                    array = librosa.resample(array, orig_sr=sampling_rate, target_sr=TARGET_SR)
+                    if sampling_rate != TARGET_SR:
+                        import librosa
+                        array = librosa.resample(array, orig_sr=sampling_rate, target_sr=TARGET_SR)
+                except Exception as e:
+                    print(f"[downloader] skipping {filename}: {e}")
+                    continue
 
                 self.q.put((filename, array))
                 delivered += 1
