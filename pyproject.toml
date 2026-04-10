@@ -13,8 +13,9 @@ dependencies = [
     "silero-vad>=6.2.1",
     "soundfile>=0.13.1",
     "tqdm>=4.67.3",
+    "transformers>=5.5.3",
 ]
 
 # For the DGX Spark
-# [tool.uv.sources]
-# ctranslate2 = { path = "../../wheels/ctranslate2-4.7.1-cp312-cp312-linux_aarch64.whl" }
+#[tool.uv.sources]
+#ctranslate2 = { path = "../../wheels/ctranslate2-4.7.1-cp312-cp312-linux_aarch64.whl" }

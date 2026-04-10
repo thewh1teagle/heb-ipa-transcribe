@@ -6,7 +6,7 @@ from tqdm import tqdm
 import numpy as np
 from faster_whisper import WhisperModel
 
-IPA_MODEL_ID = "thewh1teagle/whisper-heb-ipa-large-v3-turbo-ct2"
+IPA_MODEL_ID = "thewh1teagle/abjad-he-ipa-ct2"
 TEXT_MODEL_ID = "ivrit-ai/whisper-large-v3-turbo-ct2"
 DEVICE = "cuda"
 COMPUTE_TYPE = "int8"
@@ -48,13 +48,13 @@ class Transcriber:
 
                 filename, chunks = item
                 try:
-                    for chunk in chunks:
+                    for start_s, end_s, chunk in chunks:
                         text_future = text_pool.submit(_transcribe_chunk, chunk, False)
                         ipa_future = ipa_pool.submit(_transcribe_chunk, chunk, True)
                         text = text_future.result()
                         ipa = ipa_future.result()
                         if text or ipa:
-                            f.write(f"{filename}\t{text}\t{ipa}\n")
+                            f.write(f"{filename}\t{start_s:.3f}\t{end_s:.3f}\t{text}\t{ipa}\n")
                     f.flush()
                 except Exception as e:
                     print(f"[transcriber] skipping {filename}: {e}")

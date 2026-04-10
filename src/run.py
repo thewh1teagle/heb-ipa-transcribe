@@ -8,9 +8,9 @@ import queue
 from datasets import load_dataset_builder
 from tqdm import tqdm
 
-from pipeline.downloader import Downloader, DATASET_NAME
-from pipeline.preprocessor import Preprocessor
-from pipeline.transcriber import Transcriber
+from src.downloader import Downloader, DATASET_NAME
+from src.preprocessor import Preprocessor
+from src.transcriber import Transcriber
 
 
 def load_skip_ids(output_path: str) -> set:
