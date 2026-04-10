@@ -64,4 +64,4 @@ def _get_chunks(audio: np.ndarray, vad_model) -> list[np.ndarray]:
             current_start, current_end = chunk_start, chunk_end
     merged.append((current_start, current_end))
 
-    return [audio[s:e] for s, e in merged]
+    return [(s / SR, e / SR, audio[s:e]) for s, e in merged]
