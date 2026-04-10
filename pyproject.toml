@@ -17,5 +17,5 @@ dependencies = [
 ]
 
 # For the DGX Spark
-[tool.uv.sources]
-ctranslate2 = { path = "../../wheels/ctranslate2-4.7.1-cp312-cp312-linux_aarch64.whl" }
+#[tool.uv.sources]
+#ctranslate2 = { path = "../../wheels/ctranslate2-4.7.1-cp312-cp312-linux_aarch64.whl" }
